@@ -1,0 +1,17 @@
+**build/
+**install/
+**log/
+*.pyc
+*.pyo
+*.swp
+*.bak
+*.egg-info/
+*.egg
+dist/
+.eggs/
+*.pytest_cache/
+.pytest_cache/
+__pycache__/
+.coverage
+htmlcov/
+.tox/
