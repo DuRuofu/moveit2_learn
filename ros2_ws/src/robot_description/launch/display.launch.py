@@ -3,6 +3,7 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 from ament_index_python.packages import get_package_share_directory
 from launch.substitutions import Command, FindExecutable
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     # 获取 robot_description 包的 share 目录路径
@@ -22,7 +23,7 @@ def generate_launch_description():
             executable='robot_state_publisher',
             name='robot_state_publisher',
             output='screen',
-            parameters=[{'robot_description': robot_description_cmd}]
+            parameters=[{'robot_description': ParameterValue(robot_description_cmd, value_type=str)}]
         ),
         
         # 启动 joint_state_publisher_gui 节点，用于显示关节控制 GUI
