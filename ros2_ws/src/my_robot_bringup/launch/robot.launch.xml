@@ -1,0 +1,26 @@
+<launch>
+    <let name="urdf_path"
+            value="$(find-pkg-share robot_description)/urdf/robot.urdf.xacro"/>
+
+    <!-- 状态发布器 -->
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" 
+        value="$(command 'xacro $(var urdf_path)')"/>
+    </node>    
+
+    <!-- 控制器管理器：必须传入 robot_description 参数，否则 ros2_control 无法加载硬件接口 -->
+    <node pkg="controller_manager" exec="ros2_control_node" output="screen">
+        <param name="robot_description" value="$(command 'xacro $(var urdf_path)')"/>
+        <param from="$(find-pkg-share my_robot_bringup)/config/ros2_controllers.yaml"/> 
+    </node>
+
+    <!-- 控制器 -->
+    <node pkg="controller_manager"  exec="spawner" args="joint_state_broadcaster"/>
+    <node pkg="controller_manager"  exec="spawner" args="arm_controller"/>
+    <node pkg="controller_manager"  exec="spawner" args="gripper_controller"/>
+
+    <include file="$(find-pkg-share my_robot_moveit_config)/launch/move_group.launch.py"/>
+
+
+    <node pkg="rviz2" exec="rviz2" output="screen"/>
+</launch>
