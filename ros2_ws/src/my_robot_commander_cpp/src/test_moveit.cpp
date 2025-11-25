@@ -79,6 +79,23 @@ int main(int argc, char **argv)
         RCLCPP_ERROR(node->get_logger(), "Planning failed");
     }
 
+    // 笛卡尔空间路径规划
+    std::vector<geometry_msgs::msg::Pose> waypoints;
+    geometry_msgs::msg::Pose pose1 = arm.getCurrentPose().pose;
+    pose1.position.z += 0.2;
+    waypoints.push_back(pose1);
+
+    moveit_msgs::msg::RobotTrajectory trajectory;
+    double fraction = arm.computeCartesianPath(waypoints, 0.01,  0.0,  trajectory);
+
+    if (fraction >= 0.9)
+    {
+        arm.execute(trajectory);
+    }
+    else
+    {
+        RCLCPP_ERROR(node->get_logger(), "Cartesian path planning failed");
+    }
 
     rclcpp::shutdown();
     spinner.join();
